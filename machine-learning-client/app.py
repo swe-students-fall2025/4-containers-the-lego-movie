@@ -20,7 +20,7 @@ def main():
         analyzed = analyze_data(data)
         collection.insert_one(analyzed)
         print("✅ Inserted data:", analyzed)
-        time.sleep(5)  # Wait 5 seconds before next insert
+        time.sleep(5)  
 
 if __name__ == "__main__":
     main()
