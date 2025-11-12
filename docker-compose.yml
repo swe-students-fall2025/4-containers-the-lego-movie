@@ -1,0 +1,22 @@
+version: "3"
+services:
+  mongodb:
+    image: mongo
+    ports:
+      - "27017:27017"
+
+  ml-client:
+    build:
+      context: ./machine-learning-client
+    depends_on:
+      - mongodb
+
+  web-app:
+    build:
+      context: ./web-app
+    ports:
+      - "5050:5000"
+    depends_on:
+      - mongodb
+
+
