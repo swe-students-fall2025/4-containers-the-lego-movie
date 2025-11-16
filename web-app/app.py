@@ -20,10 +20,7 @@ database = client[DB_NAME]
 def index():
     """Render the home page with the latest analysis results."""
     analysis_results = list(
-        database["analysis_results"]
-        .find()
-        .sort("_id", -1)
-        .limit(10)
+        database["analysis_results"].find().sort("_id", -1).limit(10)
     )
     return render_template("index.html", results=analysis_results)
 
@@ -32,10 +29,7 @@ def index():
 def api_results():
     """Return the latest analysis results as JSON."""
     analysis_results = list(
-        database["analysis_results"]
-        .find()
-        .sort("_id", -1)
-        .limit(10)
+        database["analysis_results"].find().sort("_id", -1).limit(10)
     )
     for analysis_result in analysis_results:
         analysis_result["_id"] = str(analysis_result["_id"])
