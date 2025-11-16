@@ -1,9 +1,5 @@
-"""
-Database utility functions for the ML client.
-Handles MongoDB connections using pymongo.
-"""
+"""Machine learning client that simulates sensor readings and stores them in MongoDB."""
 
-import os
 import time
 import random
 from datetime import datetime, timezone
@@ -13,51 +9,68 @@ from pymongo import MongoClient
 
 
 def collect_data():
-    """Fake ML sensor --> simulates sensor"""
+    """Simulate collecting a sensor reading.
+
+    Returns a dictionary with a random float value and a UTC timestamp.
+    """
     return {
         "value": random.random(),
-        "timestamp": datetime.now(timezone.utc)
+        "timestamp": datetime.now(timezone.utc),
     }
 
 
 def analyze_data(value):
-    """classification"""
+    """Classify a numeric value as either 'high' or 'low'.
+
+    Values greater than 0.5 are classified as 'high', all others as 'low'.
+    """
     return "high" if value > 0.5 else "low"
 
 
 def save_to_db(collection, value, analysis):
-    """save to db w/ time"""
+    """Insert a reading document into the given MongoDB collection.
 
-    doc = {
+    Args:
+        collection: A MongoDB collection object.
+        value: The numeric reading value.
+        analysis: The classification label for the value.
+
+    Returns:
+        The inserted document's id.
+    """
+    document = {
         "value": value,
         "analysis": analysis,
-        "timestamp": datetime.now(timezone.utc)
+        "timestamp": datetime.now(timezone.utc),
     }
-    result = collection.insert_one(doc)
+    result = collection.insert_one(document)
     return result.inserted_id
 
 
 def get_db():
-    """get data from db"""
-
+    """Return a handle to the MongoDB database used by the ML client."""
     client = MongoClient("mongodb://mongodb:27017")
     return client["ml_db"]
 
 
 def main():
-    """main func"""
-    db = get_db()
-    readings = db["readings"]
+    """Continuously collect, analyze, and store sensor readings."""
+    database = get_db()
+    readings_collection = database["readings"]
 
     while True:
-        raw = collect_data()
-        analysis = analyze_data(raw["value"])
+        raw_reading = collect_data()
+        analysis = analyze_data(raw_reading["value"])
 
-        inserted_id = save_to_db(readings, raw["value"], analysis)
+        inserted_id = save_to_db(
+            readings_collection,
+            raw_reading["value"],
+            analysis,
+        )
 
         print(
-            f"Inserted: value={raw['value']:.3f}, "
-            f"analysis={analysis}, id={inserted_id}"
+            f"Inserted: value={raw_reading['value']:.3f}, "
+            f"analysis={analysis}, id={inserted_id}",
         )
 
         time.sleep(3)
