@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+  <head><title>Project Name</title></head>
+  <body>
+    <h1>Project Name</h1>
+    <ul>
+      {% for r in results %}
+        <li>{{ r.result }} (confidence: {{ r.confidence }})</li>
+      {% endfor %}
+    </ul>
+  </body>
+</html>
