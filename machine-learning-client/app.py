@@ -4,7 +4,6 @@ import time
 import random
 from datetime import datetime, timezone
 
-from flask import Flask
 from pymongo import MongoClient
 
 
