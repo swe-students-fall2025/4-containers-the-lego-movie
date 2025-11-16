@@ -1,6 +1,14 @@
+"""
+Database utility functions for the ML client.
+Handles MongoDB connections using pymongo.
+"""
+
+import os
 import time
 import random
 from datetime import datetime, timezone
+
+from flask import Flask
 from pymongo import MongoClient
 
 
@@ -18,6 +26,8 @@ def analyze_data(value):
 
 
 def save_to_db(collection, value, analysis):
+    """save to db w/ time"""
+
     doc = {
         "value": value,
         "analysis": analysis,
@@ -28,11 +38,14 @@ def save_to_db(collection, value, analysis):
 
 
 def get_db():
+    """get data from db"""
+
     client = MongoClient("mongodb://mongodb:27017")
     return client["ml_db"]
 
 
 def main():
+    """main func"""
     db = get_db()
     readings = db["readings"]
 

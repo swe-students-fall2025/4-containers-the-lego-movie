@@ -1,3 +1,4 @@
+import tests
 from unittest.mock import MagicMock
 from app import collect_data, analyze_data, save_to_db
 
