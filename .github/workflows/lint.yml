@@ -24,10 +24,17 @@ jobs:
           pipenv shell --fancy --python $(which python)
       - name: Lint with pylint
         if: ${{ hashFiles(format('{0}/**/*.py', matrix.subdir)) != '' }}
-        # you may set pylint to ignore any files or dependencies that make no sense to lint
         run: |
           cd ${{ matrix.subdir }}
-          pipenv run pylint **/*.py
+          export PYTHONPATH=.
+          # Adjust the targets for each subdir:
+          # - web-app: app.py, tests, maybe other modules
+          # - machine-learning-client: app.py, tests
+          if [ "${{ matrix.subdir }}" = "machine-learning-client" ]; then
+            pipenv run pylint app.py tests
+          else
+            pipenv run pylint app.py tests
+          fi
       - name: Format with black
         if: ${{ hashFiles(format('{0}/**/*.py', matrix.subdir)) != '' }}
         # you may set black to ignore any files or dependencies that make no sense to format
