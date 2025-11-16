@@ -30,7 +30,10 @@ def test_save_to_db():
     inserted_id = save_to_db(fake_collection, 0.7, "high")
 
     fake_collection.insert_one.assert_called_once()
-    call_args, unused_kwargs = fake_collection.insert_one.call_args  # pylint: disable=unused-variable
+    (
+        call_args,
+        unused_kwargs,
+    ) = fake_collection.insert_one.call_args  # pylint: disable=unused-variable
 
     inserted_document = call_args[0]
     assert inserted_document["value"] == 0.7
