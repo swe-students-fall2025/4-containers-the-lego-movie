@@ -2,7 +2,7 @@
 
 from unittest.mock import MagicMock
 
-from app import collect_data, analyze_data, save_to_db
+from app import collect_data, analyze_image, save_to_db
 
 
 def test_collect_data():
