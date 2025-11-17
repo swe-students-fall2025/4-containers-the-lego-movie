@@ -10,7 +10,6 @@ pylint = "*"
 flask = "*"
 pillow = "*"
 
-
 [dev-packages]
 
 [requires]

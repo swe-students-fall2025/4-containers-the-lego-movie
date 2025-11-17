@@ -1,7 +1,6 @@
 """Machine learning client that simulates sensor readings and stores them in MongoDB."""
 
 import base64
-import time
 import random
 from datetime import datetime, timezone
 from io import BytesIO
@@ -50,6 +49,7 @@ def save_to_db(collection, image_base64, analysis):
 
 
 def get_db():
+    """Get from db"""
     client = MongoClient("mongodb://mongodb:27017")
     return client["ml_db"]
 
@@ -71,7 +71,7 @@ def process_image():
     data = request.json
     img_b64 = data["image"]
 
-    image = img_b64 
+    image = img_b64
     analysis = analyze_image(img_b64)
 
     db = get_db()
