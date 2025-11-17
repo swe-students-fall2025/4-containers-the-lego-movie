@@ -15,12 +15,12 @@ def test_collect_data():
 
 def test_analyze_data_low():
     """analyze_data should classify low values as 'low'."""
-    assert analyze_data(0.2) == "low"
+    assert analyze_image(0.2) == "low"
 
 
 def test_analyze_data_high():
     """analyze_data should classify high values as 'high'."""
-    assert analyze_data(0.9) == "high"
+    assert analyze_image(0.9) == "high"
 
 
 def test_save_to_db():
