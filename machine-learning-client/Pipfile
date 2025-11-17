@@ -8,6 +8,7 @@ pymongo = "*"
 black = "*"
 pylint = "*"
 flask = "*"
+pillow = "*"
 
 [dev-packages]
 
