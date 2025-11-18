@@ -1,7 +1,6 @@
 """
 Web app entrypoint.
 """
-
 import os
 
 from flask import Flask, render_template, jsonify
@@ -9,7 +8,7 @@ from pymongo import MongoClient
 
 app = Flask(__name__)
 
-MONGO_URI = os.getenv("MONGO_URI", "mongodb://mongodb:27017")
+MONGO_URI = "mongodb://localhost:27017"
 DB_NAME = "lego_database"
 
 client = MongoClient(MONGO_URI)
