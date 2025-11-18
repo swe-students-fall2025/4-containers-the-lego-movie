@@ -1,7 +1,6 @@
 """
 Web app entrypoint.
 """
-import os
 
 from flask import Flask, render_template, jsonify
 from pymongo import MongoClient
