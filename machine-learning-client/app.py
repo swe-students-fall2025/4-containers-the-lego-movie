@@ -40,7 +40,9 @@ def decode_base64_to_cv2_image(image_base64: str) -> np.ndarray:
     return cv2_image
 
 
-def classify_gesture_from_landmarks(hand_landmarks) -> str:
+def classify_gesture_from_landmarks(
+    hand_landmarks,
+) -> str:  # pylint: disable=too-many-locals
     """Very simple heuristic gesture classifier based on Mediapipe landmarks.
 
     Returns one of:
