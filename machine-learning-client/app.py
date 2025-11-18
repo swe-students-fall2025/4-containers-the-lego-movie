@@ -40,9 +40,7 @@ def decode_base64_to_cv2_image(image_base64: str) -> np.ndarray:
     return cv2_image
 
 
-def classify_gesture_from_landmarks(
-    hand_landmarks,
-) -> str:  # pylint: disable=too-many-locals
+def classify_gesture_from_landmarks(hand_landmarks) -> str:
     """Very simple heuristic gesture classifier based on Mediapipe landmarks.
 
     Returns one of:
@@ -53,47 +51,43 @@ def classify_gesture_from_landmarks(
     - 'open_hand'
     - 'unknown'
     """
-    # Landmarks are normalized [0,1]; origin is top-left, so smaller y = higher on screen
     landmark_list = hand_landmarks.landmark
 
-    wrist = landmark_list[0]
-    thumb_tip = landmark_list[4]
-    index_tip = landmark_list[8]
-    middle_tip = landmark_list[12]
-    ring_tip = landmark_list[16]
-    pinky_tip = landmark_list[20]
+    wrist_landmark = landmark_list[0]
+    thumb_tip_landmark = landmark_list[4]
 
-    index_mcp = landmark_list[5]
-    middle_mcp = landmark_list[9]
-    ring_mcp = landmark_list[13]
-    pinky_mcp = landmark_list[17]
+    # Indices for index, middle, ring, pinky tips and MCP joints
+    finger_tip_indices = [8, 12, 16, 20]
+    finger_mcp_indices = [5, 9, 13, 17]
 
-    # Simple "extended finger" check: fingertip above its MCP joint
-    def is_finger_extended(tip, mcp) -> bool:
-        return tip.y < mcp.y - 0.02
+    def is_finger_extended(tip_index: int, mcp_index: int) -> bool:
+        fingertip_landmark = landmark_list[tip_index]
+        finger_mcp_landmark = landmark_list[mcp_index]
+        # smaller y = higher on screen
+        return fingertip_landmark.y < finger_mcp_landmark.y - 0.02
 
-    index_extended = is_finger_extended(index_tip, index_mcp)
-    middle_extended = is_finger_extended(middle_tip, middle_mcp)
-    ring_extended = is_finger_extended(ring_tip, ring_mcp)
-    pinky_extended = is_finger_extended(pinky_tip, pinky_mcp)
+    # Compute which fingers are extended
+    finger_states = [
+        is_finger_extended(tip_index, mcp_index)
+        for tip_index, mcp_index in zip(finger_tip_indices, finger_mcp_indices)
+    ]
+    extended_count = sum(finger_states)
 
-    extended_fingers = [
+    (
         index_extended,
         middle_extended,
         ring_extended,
         pinky_extended,
-    ]
-    extended_count = sum(extended_fingers)
+    ) = finger_states
 
     # Thumb direction: compare thumb tip to wrist
-    thumb_vertical_delta = thumb_tip.y - wrist.y
+    thumb_vertical_delta = thumb_tip_landmark.y - wrist_landmark.y
 
     # Heuristic rules
     if extended_count == 0:
         return "fist"
 
-    if all(extended_fingers):
-        # All four fingers extended; treat as open hand
+    if all(finger_states):
         return "open_hand"
 
     if index_extended and middle_extended and not ring_extended and not pinky_extended:
@@ -105,7 +99,7 @@ def classify_gesture_from_landmarks(
             return "thumbs_up"
         if thumb_vertical_delta > 0.10:
             return "thumbs_down"
-    # if unknown return unknown
+
     return "unknown"
 
 
