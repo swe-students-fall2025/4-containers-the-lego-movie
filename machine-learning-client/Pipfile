@@ -9,6 +9,9 @@ black = "*"
 pylint = "*"
 flask = "*"
 pillow = "*"
+numpy = "*"
+opencv-python = "*"
+mediapipe = "*"
 
 [dev-packages]
 
