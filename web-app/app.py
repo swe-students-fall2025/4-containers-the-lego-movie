@@ -26,7 +26,6 @@ def index():
 @app.post("/receive_result")
 def receive_result():
     """ Receive Base64 image from front-end, forward to ML service, and return result as json."""
-    global latest_result
 
     # get the image from the request
     data = request.get_json(force=True)
