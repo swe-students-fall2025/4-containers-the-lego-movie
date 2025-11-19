@@ -4,7 +4,7 @@
 import base64
 from datetime import datetime, timezone
 from io import BytesIO
-from typing import Dict, Tuple
+from typing import Dict
 
 import cv2  # pylint: disable=import-error
 import mediapipe as mp
