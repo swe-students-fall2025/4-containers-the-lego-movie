@@ -12,6 +12,7 @@ DB_NAME = "lego_database"
 client = MongoClient(MONGO_URI)
 database = client[DB_NAME]
 
+latest_result = None
 
 @app.route("/")
 def index():
@@ -24,7 +25,7 @@ def index():
 
 @app.post("/receive_result")
 def receive_result():
-    # Receive Base64 image from front-end, forward to ML service, and return result as json.
+    """ Receive Base64 image from front-end, forward to ML service, and return result as json."""
     global latest_result
 
     # get the image from the request
@@ -53,6 +54,7 @@ def receive_result():
 
 @app.route("/api/results")
 def api_results():
+    """Return the latest analysis results as JSON."""
     analysis_results = list(
         database["analysis_results"].find().sort("_id", -1).limit(10)
     )
