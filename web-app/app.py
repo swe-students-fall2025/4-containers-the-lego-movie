@@ -12,8 +12,6 @@ DB_NAME = "lego_database"
 client = MongoClient(MONGO_URI)
 database = client[DB_NAME]
 
-latest_result = None
-
 @app.route("/")
 def index():
     """ fetch the latest ML result from MongoDB """
@@ -36,7 +34,7 @@ def receive_result():
     #forward image to the ML container ? (confused on how docker works)
     try:
         ml_response = requests.post(
-            "http://localhost:5000/process",
+            "http://ml-client:5000/process",
             json={"image": image_base64},
             timeout=10
         ).json()
