@@ -166,7 +166,7 @@ def save_to_db(
 def get_db():
     """Get from db"""
     client = MongoClient("mongodb://mongodb:27017")
-    return client["ml_db"]
+    return client["lego_database"]
 
 
 # main function used by frontend
@@ -187,11 +187,13 @@ def process_incoming_image(image_base64: str) -> Dict[str, str]:
         image_path=image_path,
     )
 
-    return {
+    result = {
         "id": inserted_id,
         "gesture": gesture_label,
         "image_path": image_path,
     }
+    print("ML result:", result, flush=True)  # <--- add this
+    return result
 
 
 @app.post("/process")
