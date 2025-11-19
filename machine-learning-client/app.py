@@ -11,7 +11,7 @@ import cv2  # pylint: disable=import-error
 import mediapipe as mp
 import numpy as np
 from pymongo import MongoClient
-from flask import Flask
+from flask import Flask, request, jsonify
 
 # add request and jsonify to flask
 from PIL import Image
@@ -121,26 +121,26 @@ def analyze_image(image_base64: str) -> str:
 
 
 # returns image for frontend to use
-# def map_gesture_to_image_path(gesture_label: str) -> str:
-#     """Map a gesture label to a static image path served by the web app.
+def map_gesture_to_image_path(gesture_label: str) -> str:
+    """Map a gesture label to a static image path served by the web app.
 
-#     The frontend can treat this as a relative URL and render the image.
-#     """
-#     # You can change this base directory to match your web app setup
-#     base_path = "/static/gestures"
+    The frontend can treat this as a relative URL and render the image.
+    """
+    # You can change this base directory to match your web app setup
+    base_path = "/static/gestures"
 
-#     gesture_to_filename: Dict[str, str] = {
-#         "thumbs_up": "thumbs_up.png",
-#         "thumbs_down": "thumbs_down.png",
-#         "peace": "peace.png",
-#         "fist": "fist.png",
-#         "open_hand": "open_hand.png",
-#         "no_hand_detected": "no_hand.png",
-#     }
+    gesture_to_filename: Dict[str, str] = {
+        "thumbs_up": "thumbs_up.png",
+        "thumbs_down": "thumbs_down.png",
+        "peace": "peace.png",
+        "fist": "fist.png",
+        "open_hand": "open_hand.png",
+        "no_hand_detected": "no_hand.png",
+    }
 
-#     filename = gesture_to_filename.get(gesture_label, "unknown.png")
-#     # Join without creating filesystem paths (frontend just needs URL)
-#     return f"{base_path}/{filename}"
+    filename = gesture_to_filename.get(gesture_label, "unknown.png")
+    # Join without creating filesystem paths (frontend just needs URL)
+    return f"{base_path}/{filename}"
 
 # data base functions
 
@@ -173,36 +173,36 @@ def get_db():
 # main function used by frontend
 
 
-# def process_incoming_image(image_base64: str) -> Dict[str, str]:
-#     """Called by the web app to process a single frame."""
-#     gesture_label = analyze_image(image_base64)
-#     image_path = map_gesture_to_image_path(gesture_label)
+def process_incoming_image(image_base64: str) -> Dict[str, str]:
+    """Called by the web app to process a single frame."""
+    gesture_label = analyze_image(image_base64)
+    image_path = map_gesture_to_image_path(gesture_label)
 
-#     database = get_db()
-#     readings_collection = database["readings"]
+    database = get_db()
+    readings_collection = database["readings"]
 
-#     inserted_id = save_to_db(
-#         readings_collection,
-#         image_base64=image_base64,
-#         gesture_label=gesture_label,
-#         image_path=image_path,
-#     )
+    inserted_id = save_to_db(
+        readings_collection,
+        image_base64=image_base64,
+        gesture_label=gesture_label,
+        image_path=image_path,
+    )
 
-#     return {
-#         "id": inserted_id,
-#         "gesture": gesture_label,
-#         "image_path": image_path,
-#     }
+    return {
+        "id": inserted_id,
+        "gesture": gesture_label,
+        "image_path": image_path,
+    }
 
 
-# @app.post("/process")
-# def process_image():
-#     """Receive base64 image from web app, analyze gesture, store result, return metadata."""
-#     request_data = request.get_json(force=True)
-#     image_base64 = request_data["image"]
+@app.post("/process")
+def process_image():
+    """Receive base64 image from web app, analyze gesture, store result, return metadata."""
+    request_data = request.get_json(force=True)
+    image_base64 = request_data["image"]
 
-#     result = process_incoming_image(image_base64)
-#     return jsonify(result)
+    result = process_incoming_image(image_base64)
+    return jsonify(result)
 
 
 if __name__ == "__main__":
