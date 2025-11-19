@@ -1,15 +1,13 @@
-"""
-Web app entrypoint.
-"""
+"""Web app"""
 
-# import os
-
-from flask import Flask, render_template, jsonify
+import os
+import requests
+from flask import Flask, render_template, jsonify, request
 from pymongo import MongoClient
 
 app = Flask(__name__)
 
-MONGO_URI = "mongodb://localhost:27017"
+MONGO_URI = os.getenv("MONGO_URI", "mongodb://mongodb:27017")
 DB_NAME = "lego_database"
 
 client = MongoClient(MONGO_URI)
@@ -18,11 +16,38 @@ database = client[DB_NAME]
 
 @app.route("/")
 def index():
-    """Render the home page with the latest analysis results."""
-    analysis_results = list(
-        database["analysis_results"].find().sort("_id", -1).limit(10)
-    )
-    return render_template("index.html", results=analysis_results)
+    """fetch the latest ML result from MongoDB"""
+    latest_result = database["readings"].find_one(sort=[("_id", -1)])
+    if latest_result:
+        # convert _id to string for JSON/templating
+        latest_result["_id"] = str(latest_result["_id"])
+    return render_template("index.html", result=latest_result)
+
+
+@app.post("/receive_result")
+def receive_result():
+    """Receive Base64 image from front-end, forward to ML service, and return result as json."""
+
+    # get the image from the request
+    data = request.get_json(force=True)
+    image_base64 = data.get("image_base64")
+    if not image_base64:
+        return jsonify({"error": "No image provided"}), 400
+
+    # forward image to the ML container ? (confused on how docker works)
+    try:
+        ml_response = requests.post(
+            "http://ml-client:5000/process", json={"image": image_base64}, timeout=10
+        ).json()
+    except requests.RequestException as e:
+        return jsonify({"error": "Could not reach ML service", "details": str(e)}), 500
+
+    latest_result = database["readings"].find_one(sort=[("_id", -1)])
+    if latest_result:
+        latest_result["_id"] = str(latest_result["_id"])
+
+    # return the ML result as JSON
+    return jsonify(ml_response)
 
 
 @app.route("/api/results")
