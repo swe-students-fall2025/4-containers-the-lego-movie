@@ -4,8 +4,7 @@
 import base64
 from datetime import datetime, timezone
 from io import BytesIO
-
-# from typing import Dict, Tuple
+from typing import Dict, Tuple
 
 import cv2  # pylint: disable=import-error
 import mediapipe as mp
@@ -13,7 +12,6 @@ import numpy as np
 from pymongo import MongoClient
 from flask import Flask, request, jsonify
 
-# add request and jsonify to flask
 from PIL import Image
 
 app = Flask(__name__)
@@ -141,6 +139,7 @@ def map_gesture_to_image_path(gesture_label: str) -> str:
     filename = gesture_to_filename.get(gesture_label, "unknown.png")
     # Join without creating filesystem paths (frontend just needs URL)
     return f"{base_path}/{filename}"
+
 
 # data base functions
 
