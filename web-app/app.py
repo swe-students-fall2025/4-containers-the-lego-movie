@@ -1,5 +1,6 @@
-import requests
+"""Web app"""
 import os
+import requests
 from flask import Flask, render_template, jsonify, request
 from pymongo import MongoClient
 
@@ -11,13 +12,10 @@ DB_NAME = "lego_database"
 client = MongoClient(MONGO_URI)
 database = client[DB_NAME]
 
-#global variable that displays the latest result from ML
-latest_result = None
-
 
 @app.route("/")
 def index():
-    # fetch the latest ML result from MongoDB
+    """ fetch the latest ML result from MongoDB """
     latest_result = database["readings"].find_one(sort=[("_id", -1)])
     if latest_result:
         # convert _id to string for JSON/templating
