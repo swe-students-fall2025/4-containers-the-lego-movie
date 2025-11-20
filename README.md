@@ -60,8 +60,8 @@ Install the following:
 ## ✔ 2. Clone the Repository
 
 
-git clone https://github.com/nyu-software-engineering/4-containers-the-lego-movie.git
-cd 4-containers-the-lego-movie
+- git clone https://github.com/swe-students-fall2025/4-containers-the-lego-movie.git
+- cd 4-containers-the-lego-movie
 
 ---
 
