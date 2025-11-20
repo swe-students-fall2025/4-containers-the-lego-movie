@@ -69,7 +69,7 @@ cd 4-containers-the-lego-movie
 You can copy the example file:
 
 - cp env.example .env
-Or create it manually:
+- Or create it manually:
 
 - Use .env file provided in submission
 
