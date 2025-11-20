@@ -68,26 +68,25 @@ cd 4-containers-the-lego-movie
 ## ✔ 3. Create the Environment File
 You can copy the example file:
 
-cp env.example .env
+- cp env.example .env
 Or create it manually:
 
-Use .env file provided in submission
+- Use .env file provided in submission
 
 ---
 
 ## ✔ 4. Launch All Services
 Build and start every container:
 
-bash
-Copy code
-docker compose up --build
+
+- docker compose up --build
 
 ---
 
 ## ✔ 5. Access the Web Interface
 Once everything is running, open:
 
-http://localhost:5050
+- http://localhost:5050
 
 ---
 
@@ -96,14 +95,14 @@ http://localhost:5050
 Each subsystem has its own virtual environment managed with pipenv.
 
 ML Client Tests
-cd machine-learning-client
-pipenv install --dev
-pipenv run pytest --cov
+- cd machine-learning-client
+- pipenv install --dev
+- pipenv run pytest --cov
 
 Web App Tests
-cd web-app
-pipenv install --dev
-pipenv run pytest --cov
+- cd web-app
+- pipenv install --dev
+- pipenv run pytest --cov
 
 ---
 
@@ -112,25 +111,25 @@ pipenv run pytest --cov
 Both subsystems must satisfy PEP8 (Black + pylint).
 
 Run Black
-pipenv run black .
+- pipenv run black .
 
 Run Pylint
-pipenv run pylint app.py
-pipenv run pylint tests
+- pipenv run pylint app.py
+- pipenv run pylint tests
 
 ---
 
 ## ✔ 8. Developer Local-Run Instructions (Without Docker)
 
 Web App Only
-cd web-app
-pipenv install
-pipenv run flask run --port 5000
+- cd web-app
+- pipenv install
+- pipenv run flask run --port 5000
 
 Machine Learning Client Only
-cd machine-learning-client
-pipenv install
-pipenv run flask run --port 5001
+- cd machine-learning-client
+- pipenv install
+- pipenv run flask run --port 5001
 
 
 Make sure MongoDB is running locally on localhost:27017.
