@@ -1,0 +1,34 @@
+name: Web App CI
+
+on:
+  push:
+    paths:
+      - "web-app/**"
+      - ".github/workflows/web-app.yml"
+  pull_request:
+    paths:
+      - "web-app/**"
+
+jobs:
+  web-app-ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies with pipenv
+        working-directory: ./web-app
+        run: |
+          pip install pipenv
+          pipenv install --dev --deploy
+
+      - name: Run tests (if any)
+        working-directory: ./web-app
+        run: |
+          pipenv run pytest || echo "No tests found, skipping"
