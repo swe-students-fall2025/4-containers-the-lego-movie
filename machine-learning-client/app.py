@@ -1,6 +1,7 @@
 """Machine learning client that simulates sensor readings and stores them in MongoDB."""
 
 # currently some functions are commented out as i cant access web app yet
+import os
 import base64
 from datetime import datetime, timezone
 from io import BytesIO
@@ -15,6 +16,9 @@ from flask import Flask, request, jsonify
 from PIL import Image
 
 app = Flask(__name__)
+
+MONGO_URI = os.getenv("MONGO_URI", "mongodb://mongodb:27017")
+DB_NAME = os.getenv("DB_NAME", "lego_database")
 
 mediapipe_hands = mp.solutions.hands.Hands(
     static_image_mode=True,
@@ -164,9 +168,9 @@ def save_to_db(
 
 
 def get_db():
-    """Get from db"""
-    client = MongoClient("mongodb://mongodb:27017")
-    return client["lego_database"]
+    """Get MongoDB database handle."""
+    mongo_client = MongoClient(MONGO_URI)
+    return mongo_client[DB_NAME]
 
 
 # main function used by frontend

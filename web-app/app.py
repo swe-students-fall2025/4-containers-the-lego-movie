@@ -8,7 +8,8 @@ from pymongo import MongoClient
 app = Flask(__name__)
 
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://mongodb:27017")
-DB_NAME = "lego_database"
+DB_NAME = os.getenv("DB_NAME", "lego_database")
+ML_CLIENT_URL = os.getenv("ML_CLIENT_URL", "http://ml-client:5000/process")
 
 client = MongoClient(MONGO_URI)
 database = client[DB_NAME]
@@ -37,7 +38,7 @@ def receive_result():
     # forward image to the ML container ? (confused on how docker works)
     try:
         ml_response = requests.post(
-            "http://ml-client:5000/process", json={"image": image_base64}, timeout=10
+            ML_CLIENT_URL, json={"image": image_base64}, timeout=10
         ).json()
     except requests.RequestException as e:
         return jsonify({"error": "Could not reach ML service", "details": str(e)}), 500
