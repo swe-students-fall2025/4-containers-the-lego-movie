@@ -136,7 +136,6 @@ def map_gesture_to_image_path(gesture_label: str) -> str:
         "thumbs_up": "thumbs_up.png",
         "thumbs_down": "thumbs_down.png",
         "peace": "peace.png",
-        "fist": "fist.png",
         "open_hand": "open_hand.png",
         "no_hand_detected": "no_hand.png",
     }
