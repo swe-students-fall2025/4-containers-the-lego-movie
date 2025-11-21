@@ -1,11 +1,12 @@
 """Unit tests for the machine learning helper functions."""
 import sys
 import os
-import base64
 import io
-from PIL import Image
+import base64
 from unittest.mock import MagicMock, patch
+
 import numpy as np
+from PIL import Image
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
@@ -31,6 +32,7 @@ def create_dummy_image_base64(width = 64, height = 64, color = (255, 0, 0)) -> s
 
 # Test decode_base64_to_cv2_image
 def test_decode_base64_to_cv2_image():
+    """Check base64 image is decoded correctly into OpenCV format."""
     dummy_base64 = create_dummy_image_base64()
     cv2_image = decode_base64_to_cv2_image(dummy_base64)
     assert cv2_image.shape == (64, 64, 3)
