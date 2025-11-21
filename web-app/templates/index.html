@@ -48,6 +48,18 @@
           width: 30%;
       }
 
+      #uploadBtn { 
+          background-color: dodgerblue;
+          color: white; 
+          border: 3px solid dodgerblue;
+          border-radius: 6px;
+          padding: 6px;
+          margin: 8px;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+          transition: background 0.2s;
+          width: 30%;
+      }
+
       #captureBtn:hover { 
         background-color: rgb(24, 112, 201);
         border: 3px solid  rgb(24, 112, 201);
@@ -77,12 +89,14 @@
         <video id="preview" autoplay playsinline width="400"></video>
         <button id="captureBtn">Take Photo</button>
         <strong>Try making a 👍, 👎, ✊, ✌️, or ✋</strong>
+        <button id="uploadBtn">Upload Photo</button>
+        <input type="file" id="uploadInput" accept="image/*" style="display:none;">
       </div>
      
       
       <div id="result">
         <h2 style="margin-top: 0px;">Detected Gesture:</h2>
-        <p id="gesture-name">Take a photo to detect a gesture!</p>
+        <p id="gesture-name">Take a photo or upload a photo to detect a gesture!</p>
         <img id="gesture-img" src="/static/gestures/default.png" alt="Gesture Image">
       </div>
   
@@ -140,6 +154,38 @@
           .catch(function (err) {
             console.error("Could not open camera:", err);
           });
+
+          document.getElementById("uploadBtn").onclick = function() {
+            document.getElementById("uploadInput").click();
+          };
+          document.getElementById("uploadInput").onchange = function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+              const base64 = e.target.result.split(",")[1];
+              fetch("/receive_result", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ image_base64: base64 })
+              })
+              .then(res => res.json()) 
+              .then(function(data) {
+                console.log("ML Response:", data);
+                document.getElementById("gesture-name").textContent = gestureStrings[data.gesture] || "Unknown gesture";
+
+                // update the gesture image
+                if (data.image_path) {
+                  document.getElementById("gesture-img").src = data.image_path;
+                } else {
+                  document.getElementById("gesture-img").src = "";
+                }
+              })
+              .catch(err => console.error("Error:", err));
+            };
+            reader.readAsDataURL(file);
+          };
       </script>
     </div>
     
