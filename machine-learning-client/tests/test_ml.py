@@ -1,5 +1,6 @@
 """Unit tests for the machine learning helper functions."""
 # pylint: disable=missing-function-docstring, missing-class-docstring
+# pylint: disable=wrong-import-position
 import sys
 import os
 import io
@@ -13,8 +14,6 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")
 
 from app import (
     decode_base64_to_cv2_image,
-    # classify_gesture_from_landmarks,
-    # analyze_image,
     map_gesture_to_image_path,
     save_to_db,
     process_incoming_image,
