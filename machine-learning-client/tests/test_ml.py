@@ -31,13 +31,62 @@ def create_dummy_image_base64(width = 64, height = 64, color = (255, 0, 0)) -> s
     return base64.b64encode(img_bytes).decode('utf-8')
 
 # Test decode_base64_to_cv2_image
-
 def test_decode_base64_to_cv2_image():
     """decode_base64_to_cv2_image should return a valid cv2 image array."""
     dummy_base64 = create_dummy_image_base64()
     cv2_image = decode_base64_to_cv2_image(dummy_base64)
     assert cv2_image.shape == (64, 64, 3)
     assert cv2_image.dtype == np.uint8
+
+# Test classify_gesture_from_landmarks
+class MockLandmark:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+class MockHandLandmarks:
+    def __init__(self, landmarks):
+        self.landmark = landmarks
+
+def make_landmarks(ys):
+    return MockHandLandmarks([MockLandmark(0, y) for y in ys])
+
+# Test map_gesture_to_image_path
+def test_map_gesture_to_image_path():
+    path = map_gesture_to_image_path("thumbs_up")
+    assert path.endswith("thumbs_up.png")
+    unknown_path = map_gesture_to_image_path("nonexistent")
+    assert unknown_path.endswith("unknown.png")
+
+# Test save_to_db
+def test_save_to_db():
+    mock_collection = MagicMock()
+    mock_collection.insert_one.return_value.inserted_id = "123"
+    inserted_id = save_to_db(
+        mock_collection,
+        "base64data",
+        "thumbs_up",
+        "/static/gestures/thumbs_up.png",
+    )
+    assert inserted_id == "123"
+    mock_collection.insert_one.assert_called_once()
+
+# Test process_incoming_image
+@patch("app.get_db")
+@patch("app.analyze_image")
+def test_process_incoming_image(mock_analyze_image, mock_get_db):
+    mock_analyze_image.return_value = "thumbs_up"
+
+    mock_collection = MagicMock()
+    mock_collection.insert_one.return_value.inserted_id = "abc123"
+    mock_db = {"readings": mock_collection}
+    mock_get_db.return_value = mock_db
+
+    img_b64 = create_dummy_image_base64()
+    result = process_incoming_image(img_b64)
+
+    assert result["gesture"] == "thumbs_up"
+    assert result["image_path"].endswith("thumbs_up.png")
+    assert result["id"] == "abc123"
 
 # def test_collect_data():
 #     """collect_data should return a mapping with a float value and timestamp."""
