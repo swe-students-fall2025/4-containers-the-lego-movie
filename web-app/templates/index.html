@@ -1,77 +1,147 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Project Name</title>
+    <title>MojiHands</title>
     <style>
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+        background-color: rgb(79 187 253 / 15%);
+        color: #1849b3;
+      }
+
+      #all-content { 
+        display: flex; 
+        justify-content: center; 
+        align-items: center; 
+        margin: 30px; 
+        padding: 10px;
+      }
+
+      #preview-content { 
+        display: flex; 
+        flex-direction: column; 
+        align-items: center; 
+        width: 50vw;
+        max-width: 400px;
+      }
+
+      #result { 
+        text-align: center; 
+        width: 40vw; 
+        max-width: 400px;
+      }
+
       #gesture-img {
         margin-top: 20px;
         max-width: 200px;
       }
+
+      #captureBtn { 
+          background-color: dodgerblue;
+          color: white; 
+          border: 3px solid dodgerblue;
+          border-radius: 6px;
+          padding: 6px;
+          margin: 8px;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+          transition: background 0.2s;
+          width: 30%;
+      }
+
+      #captureBtn:hover { 
+        background-color: rgb(24, 112, 201);
+        border: 3px solid  rgb(24, 112, 201);
+      }
+
+      #preview { 
+        border-radius: 6px;
+        border: 6px solid dodgerblue;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      }
+      
+      #gesture-name { 
+        color: dodgerblue;
+        font-size: 17px;
+        text-align: center;
+        font-weight: bold;
+      }
+
     </style>
   </head>
   <body>
-    <h1>Project Name</h1>
+    <h1 style="text-align: center;">Project Name</h1>
 
-    <video id="preview" autoplay playsinline width="300"></video>
-    <button id="captureBtn">Take Photo</button>
+    <div id="all-content">
 
-    <div id="result">
-      <h2>Detected Gesture:</h2>
-      <p id="gesture-name">None yet</p>
-      <img id="gesture-img" src="" alt="Gesture Image">
+      <div id="preview-content">
+        <video id="preview" autoplay playsinline width="400"></video>
+        <button id="captureBtn">Take Photo</button>
+        <strong>Try making a 👍, 👎, ✊, ✌️, or ✋</strong>
+      </div>
+     
+      
+      <div id="result">
+        <h2 style="margin-top: 0px;">Detected Gesture:</h2>
+        <p id="gesture-name">Take a photo to detect a gesture!</p>
+        <img id="gesture-img" src="/static/gestures/default.png" alt="Gesture Image">
+      </div>
+  
+      <script>
+        function blobToBase64(blob) {
+          return new Promise(function (resolve) {
+            const reader = new FileReader();
+            reader.onloadend = function () {
+              resolve(reader.result.split(",")[1]);
+            };
+            reader.readAsDataURL(blob);
+          });
+        }
+        
+        gestureStrings = {'no_hand_detected': 'No hand detected.', 'thumbs_up': 'Thumbs Up', 'thumbs_down': 'Thumbs Down',
+                          'peace': 'Peace Sign', 'fist': 'Fist', 'open_hand': 'Palm', 'unknown': 'Unknown gesture'}
+
+        navigator.mediaDevices.getUserMedia({ video: true })
+          .then(function (stream) {
+            const video = document.getElementById("preview");
+            video.srcObject = stream;
+  
+            document.getElementById("captureBtn").onclick = function () {
+              const track = stream.getVideoTracks()[0];
+              const capture = new ImageCapture(track);
+  
+              capture.takePhoto()
+                .then(blobToBase64)
+                .then(function(base64) {
+                  // send to app.py which will send to ML client to be analyzed 
+                  console.log("Base64:", base64); 
+                  return fetch("/receive_result", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ image_base64: base64 })
+                  });
+                })
+                .then(res => res.json())
+                .then(function(data) {
+                  console.log("ML Response:", data);
+  
+                  // update the displayed gesture name
+                  document.getElementById("gesture-name").textContent = gestureStrings[data.gesture] || "Unknown gesture";
+  
+                  // update the gesture image
+                  if (data.image_path) {
+                    document.getElementById("gesture-img").src = data.image_path;
+                  } else {
+                    document.getElementById("gesture-img").src = "";
+                  }
+                })
+                .catch(err => console.error("Error:", err));
+            };
+          })
+          .catch(function (err) {
+            console.error("Could not open camera:", err);
+          });
+      </script>
     </div>
-
-    <script>
-      function blobToBase64(blob) {
-        return new Promise(function (resolve) {
-          const reader = new FileReader();
-          reader.onloadend = function () {
-            resolve(reader.result.split(",")[1]);
-          };
-          reader.readAsDataURL(blob);
-        });
-      }
-
-      navigator.mediaDevices.getUserMedia({ video: true })
-        .then(function (stream) {
-          const video = document.getElementById("preview");
-          video.srcObject = stream;
-
-          document.getElementById("captureBtn").onclick = function () {
-            const track = stream.getVideoTracks()[0];
-            const capture = new ImageCapture(track);
-
-            capture.takePhoto()
-              .then(blobToBase64)
-              .then(function(base64) {
-                // send to app.py which will send to ML client to be analyzed 
-                console.log("Base64:", base64); 
-                return fetch("/receive_result", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ image_base64: base64 })
-                });
-              })
-              .then(res => res.json())
-              .then(function(data) {
-                console.log("ML Response:", data);
-
-                // update the displayed gesture name
-                document.getElementById("gesture-name").textContent = data.gesture || "Unknown";
-
-                // update the gesture image
-                if (data.image_path) {
-                  document.getElementById("gesture-img").src = data.image_path;
-                } else {
-                  document.getElementById("gesture-img").src = "";
-                }
-              })
-              .catch(err => console.error("Error:", err));
-          };
-        })
-        .catch(function (err) {
-          console.error("Could not open camera:", err);
-        });
-    </script>
+    
   </body>
 </html>
