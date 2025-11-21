@@ -5,8 +5,8 @@
 [![Machine Learning Client CI](https://github.com/swe-students-fall2025/4-containers-the-lego-movie/actions/workflows/machine-learning-client.yml/badge.svg)](https://github.com/swe-students-fall2025/4-containers-the-lego-movie/actions/workflows/machine-learning-client.yml)
 
 
-
-# 🧱 Containerized Hand Gesture Recognition System
+# MojiHands
+## 🧱 Containerized Hand Gesture Recognition System
 
 A fully containerized machine-learning pipeline that captures a hand gesture from the browser, analyzes it with MediaPipe, stores results in MongoDB, and displays them in a clean Flask web interface.  
 All services run seamlessly together using **Docker Compose** and are continuously validated by **GitHub Actions**.
@@ -35,7 +35,7 @@ This repository contains a complete multi-container system with three main compo
 
 ## 👥 Team Members
 - **Conor Tiernan** — https://github.com/ct-04  
--  
+- **Sydney Nadeau** - https://github.com/sen5217  
 -  
 -  
 -  
