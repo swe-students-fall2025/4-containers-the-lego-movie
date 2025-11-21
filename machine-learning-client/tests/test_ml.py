@@ -5,15 +5,14 @@ import base64
 import io
 from PIL import Image
 from unittest.mock import MagicMock, patch
-import pytest
 import numpy as np
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from app import (
     decode_base64_to_cv2_image,
-    classify_gesture_from_landmarks,
-    analyze_image,
+    # classify_gesture_from_landmarks,
+    # analyze_image,
     map_gesture_to_image_path,
     save_to_db,
     process_incoming_image,
@@ -32,13 +31,13 @@ def create_dummy_image_base64(width = 64, height = 64, color = (255, 0, 0)) -> s
 
 # Test decode_base64_to_cv2_image
 def test_decode_base64_to_cv2_image():
-    """decode_base64_to_cv2_image should return a valid cv2 image array."""
     dummy_base64 = create_dummy_image_base64()
     cv2_image = decode_base64_to_cv2_image(dummy_base64)
     assert cv2_image.shape == (64, 64, 3)
     assert cv2_image.dtype == np.uint8
 
 # Test classify_gesture_from_landmarks
+# pylint: disable=too-few-public-methods
 class MockLandmark:
     def __init__(self, x, y):
         self.x = x
