@@ -1,4 +1,5 @@
 """Unit tests for the machine learning helper functions."""
+
 # pylint: disable=missing-function-docstring, missing-class-docstring
 # pylint: disable=wrong-import-position
 import sys
@@ -19,15 +20,17 @@ from app import (
     process_incoming_image,
 )
 
+
 # Create dummy image
-def create_dummy_image_base64(width = 64, height = 64, color = (255, 0, 0)) -> str:
+def create_dummy_image_base64(width=64, height=64, color=(255, 0, 0)) -> str:
     """Create a dummy base64 encoded image for testing."""
     img = np.full((height, width, 3), color, dtype=np.uint8)
     pil_image = Image.fromarray(img)
     buffer = io.BytesIO()
     pil_image.save(buffer, format="PNG")
     img_bytes = buffer.getvalue()
-    return base64.b64encode(img_bytes).decode('utf-8')
+    return base64.b64encode(img_bytes).decode("utf-8")
+
 
 # Test decode_base64_to_cv2_image
 def test_decode_base64_to_cv2_image():
@@ -37,20 +40,27 @@ def test_decode_base64_to_cv2_image():
     assert cv2_image.shape == (64, 64, 3)
     assert cv2_image.dtype == np.uint8
 
+
 # Test classify_gesture_from_landmarks
 # pylint: disable=too-few-public-methods
 class MockLandmark:
     """Mock class for a single landmark with x and y coordinates."""
+
     def __init__(self, x, y):
         self.x = x
         self.y = y
+
+
 class MockHandLandmarks:
     """Mock class for hand landmarks."""
+
     def __init__(self, landmarks):
         self.landmark = landmarks
 
+
 def make_landmarks(ys):
     return MockHandLandmarks([MockLandmark(0, y) for y in ys])
+
 
 # Test map_gesture_to_image_path
 def test_map_gesture_to_image_path():
@@ -59,6 +69,7 @@ def test_map_gesture_to_image_path():
     assert path.endswith("thumbs_up.png")
     unknown_path = map_gesture_to_image_path("nonexistent")
     assert unknown_path.endswith("unknown.png")
+
 
 # Test save_to_db
 def test_save_to_db():
@@ -73,6 +84,7 @@ def test_save_to_db():
     )
     assert inserted_id == "123"
     mock_collection.insert_one.assert_called_once()
+
 
 # Test process_incoming_image
 @patch("app.get_db")
@@ -92,6 +104,7 @@ def test_process_incoming_image(mock_analyze_image, mock_get_db):
     assert result["gesture"] == "thumbs_up"
     assert result["image_path"].endswith("thumbs_up.png")
     assert result["id"] == "abc123"
+
 
 # def test_collect_data():
 #     """collect_data should return a mapping with a float value and timestamp."""

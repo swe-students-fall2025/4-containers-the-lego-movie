@@ -28,6 +28,7 @@ mediapipe_drawing = mp.solutions.drawing_utils
 
 # utility functions
 
+
 def decode_base64_to_cv2_image(image_base64: str) -> np.ndarray:
     # pylint: disable=undefined-variable
     """Decode a base64-encoded image string into an OpenCV BGR image."""
@@ -132,6 +133,7 @@ def map_gesture_to_image_path(gesture_label: str) -> str:
 
 
 # data base functions
+
 
 def save_to_db(
     collection,
