@@ -60,10 +60,6 @@ def classify_gesture_from_landmarks(hand_landmarks) -> str:
     finger_tip_indices = [8, 12, 16, 20]
     finger_mcp_indices = [5, 9, 13, 17]
 
-    hand_size = np.linalg.norm(
-        np.array([landmark_list[9].x - wrist.x, landmark_list[9].y - wrist.y])
-    )
-
     def is_finger_extended(tip_idx, mcp_idx):
         tip = landmark_list[tip_idx]
         mcp = landmark_list[mcp_idx]
