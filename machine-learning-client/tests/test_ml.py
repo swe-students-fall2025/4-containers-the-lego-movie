@@ -8,8 +8,6 @@ from unittest.mock import MagicMock, patch
 import numpy as np
 from PIL import Image
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-
 from app import (
     decode_base64_to_cv2_image,
     # classify_gesture_from_landmarks,
@@ -18,6 +16,8 @@ from app import (
     save_to_db,
     process_incoming_image,
 )
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 # Create dummy image
 def create_dummy_image_base64(width = 64, height = 64, color = (255, 0, 0)) -> str:
@@ -40,10 +40,12 @@ def test_decode_base64_to_cv2_image():
 # Test classify_gesture_from_landmarks
 # pylint: disable=too-few-public-methods
 class MockLandmark:
+    """Mock class for a single landmark with x and y coordinates."""
     def __init__(self, x, y):
         self.x = x
         self.y = y
 class MockHandLandmarks:
+    """Mock class for hand landmarks."""
     def __init__(self, landmarks):
         self.landmark = landmarks
 
