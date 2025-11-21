@@ -1,6 +1,5 @@
 """Machine learning client that simulates sensor readings and stores them in MongoDB."""
 
-# currently some functions are commented out as i cant access web app yet
 import os
 import base64
 from datetime import datetime, timezone
