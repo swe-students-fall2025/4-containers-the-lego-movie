@@ -1,193 +1,290 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>MojiHands</title>
-    <style>
-      body {
-        font-family: Arial, Helvetica, sans-serif;
-        background-color: rgb(79 187 253 / 15%);
-        color: #1849b3;
-      }
 
-      #all-content { 
-        display: flex; 
-        justify-content: center; 
-        align-items: center; 
-        margin: 30px; 
-        padding: 10px;
-      }
+<head>
+  <title>MojiHands</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-pfVYHk1M0r7l+Y..." crossorigin="anonymous" referrerpolicy="no-referrer" />  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background-color: rgb(79 187 253 / 15%);
+      color: #1849b3;
+    }
 
-      #preview-content { 
-        display: flex; 
-        flex-direction: column; 
-        align-items: center; 
-        width: 50vw;
-        max-width: 400px;
-      }
+    #all-content {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 30px;
+      padding: 10px;
+    }
 
-      #result { 
-        text-align: center; 
-        width: 40vw; 
-        max-width: 400px;
-      }
+    #preview-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 50vw;
+      max-width: 400px;
+    }
 
-      #gesture-img {
-        margin-top: 20px;
-        max-width: 200px;
-      }
+    #result {
+      text-align: center;
+      width: 40vw;
+      max-width: 400px;
+    }
 
-      #captureBtn { 
-          background-color: dodgerblue;
-          color: white; 
-          border: 3px solid dodgerblue;
-          border-radius: 6px;
-          padding: 6px;
-          margin: 8px;
-          box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-          transition: background 0.2s;
-          width: 30%;
-      }
+    #gesture-img {
+      margin-top: 20px;
+      max-width: 200px;
+    }
 
-      #uploadBtn { 
-          background-color: dodgerblue;
-          color: white; 
-          border: 3px solid dodgerblue;
-          border-radius: 6px;
-          padding: 6px;
-          margin: 8px;
-          box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-          transition: background 0.2s;
-          width: 30%;
-      }
+    #captureBtn {
+      background-color: dodgerblue;
+      color: white;
+      border: 3px solid dodgerblue;
+      border-radius: 6px;
+      padding: 6px;
+      margin: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      transition: background 0.2s;
+      width: 30%;
+    }
 
-      #captureBtn:hover { 
-        background-color: rgb(24, 112, 201);
-        border: 3px solid  rgb(24, 112, 201);
-      }
+    #captureBtn:hover {
+      background-color: rgb(24, 112, 201);
+      border: 3px solid rgb(24, 112, 201);
+    }
 
-      #preview { 
-        border-radius: 6px;
-        border: 6px solid dodgerblue;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-      }
-      
-      #gesture-name { 
-        color: dodgerblue;
-        font-size: 17px;
-        text-align: center;
-        font-weight: bold;
-      }
+    #uploadBtn {
+      background-color: dodgerblue;
+      color: white;
+      border: 3px solid dodgerblue;
+      border-radius: 6px;
+      padding: 6px;
+      margin: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      transition: background 0.2s;
+      width: 30%;
+    }
 
-    </style>
-  </head>
-  <body>
-    <h1 style="text-align: center;">MojiHands</h1>
+    #uploadBtn:hover {
+      background-color: rgb(24, 112, 201);
+      border: 3px solid rgb(24, 112, 201);
+    }
 
-    <div id="all-content">
+    #toggle-container {
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 10px; 
+    }
 
-      <div id="preview-content">
-        <video id="preview" autoplay playsinline width="400"></video>
-        <button id="captureBtn">Take Photo</button>
-        <strong>Try making a 👍, 👎, ✊, ✌️, or ✋</strong>
-        <button id="uploadBtn">Upload Photo</button>
-        <input type="file" id="uploadInput" accept="image/*" style="display:none;">
+    #toggleCameraBtn {
+      background-color: dodgerblue;
+      color: white;
+      border: 3px solid dodgerblue;
+      border-radius: 6px;
+      padding: 6px;
+      margin: 15px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      transition: background 0.2s;
+    }
+
+    #toggleCameraBtn:hover {
+      background-color: rgb(24, 112, 201);
+      border: 3px solid rgb(24, 112, 201);
+    }
+
+    #toggleCameraBtn.camera-off {
+      background-color: red !important;
+      border-color: red !important;
+    }
+
+    .icon-btn i {
+      font-size: 24px;
+      pointer-events: none;
+    }
+
+    #preview {
+      width: 400px;      
+      height: 300px;    
+      border-radius: 6px;
+      border: 6px solid dodgerblue;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      background-color: black; 
+    }
+
+    #gesture-name {
+      color: dodgerblue;
+      font-size: 17px;
+      text-align: center;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <h1 style="text-align: center;">MojiHands</h1>
+
+  <div id="all-content">
+
+    <div id="preview-content">
+      <div id = "camera-controls">
+        <button id="toggleCameraBtn" class="icon-btn" title="Toggle Camera">
+          <i id="toggleIcon" class="fa-solid fa-video"></i>
+        </button>
       </div>
-     
-      
-      <div id="result">
-        <h2 style="margin-top: 0px;">Detected Gesture:</h2>
-        <p id="gesture-name">Take a photo or upload a photo to detect a gesture!</p>
-        <img id="gesture-img" src="/static/gestures/default.png" alt="Gesture Image">
-      </div>
-  
-      <script>
-        function blobToBase64(blob) {
-          return new Promise(function (resolve) {
-            const reader = new FileReader();
-            reader.onloadend = function () {
-              resolve(reader.result.split(",")[1]);
-            };
-            reader.readAsDataURL(blob);
-          });
-        }
-        
-        gestureStrings = {'no_hand_detected': 'No hand detected.', 'thumbs_up': 'Thumbs Up', 'thumbs_down': 'Thumbs Down',
-                          'peace': 'Peace Sign', 'fist': 'Fist', 'open_hand': 'Palm', 'unknown': 'Unknown gesture'}
-
-        navigator.mediaDevices.getUserMedia({ video: true })
-          .then(function (stream) {
-            const video = document.getElementById("preview");
-            video.srcObject = stream;
-  
-            document.getElementById("captureBtn").onclick = function () {
-              const track = stream.getVideoTracks()[0];
-              const capture = new ImageCapture(track);
-  
-              capture.takePhoto()
-                .then(blobToBase64)
-                .then(function(base64) {
-                  // send to app.py which will send to ML client to be analyzed 
-                  console.log("Base64:", base64); 
-                  return fetch("/receive_result", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ image_base64: base64 })
-                  });
-                })
-                .then(res => res.json())
-                .then(function(data) {
-                  console.log("ML Response:", data);
-  
-                  // update the displayed gesture name
-                  document.getElementById("gesture-name").textContent = gestureStrings[data.gesture] || "Unknown gesture";
-  
-                  // update the gesture image
-                  if (data.image_path) {
-                    document.getElementById("gesture-img").src = data.image_path;
-                  } else {
-                    document.getElementById("gesture-img").src = "";
-                  }
-                })
-                .catch(err => console.error("Error:", err));
-            };
-          })
-          .catch(function (err) {
-            console.error("Could not open camera:", err);
-          });
-
-          document.getElementById("uploadBtn").onclick = function() {
-            document.getElementById("uploadInput").click();
-          };
-          document.getElementById("uploadInput").onchange = function(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-              const base64 = e.target.result.split(",")[1];
-              fetch("/receive_result", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ image_base64: base64 })
-              })
-              .then(res => res.json()) 
-              .then(function(data) {
-                console.log("ML Response:", data);
-                document.getElementById("gesture-name").textContent = gestureStrings[data.gesture] || "Unknown gesture";
-
-                // update the gesture image
-                if (data.image_path) {
-                  document.getElementById("gesture-img").src = data.image_path;
-                } else {
-                  document.getElementById("gesture-img").src = "";
-                }
-              })
-              .catch(err => console.error("Error:", err));
-            };
-            reader.readAsDataURL(file);
-          };
-      </script>
+      <video id="preview" autoplay playsinline width="400"></video>
+      <strong style="padding-top: 1rem;">Try making a 👍, 👎, ✊, ✌️, or ✋</strong>
+      <button id="captureBtn">Take Photo</button>
+      <strong style="padding-top: 1rem;">Or upload a photo!</strong>
+      <button id="uploadBtn">Upload Photo</button>
+      <input type="file" id="uploadInput" accept="image/*" style="display:none;">
     </div>
-    
-  </body>
+
+
+    <div id="result">
+      <h2 style="margin-top: 0px;">Detected Gesture:</h2>
+      <p id="gesture-name">Take a photo or upload a photo to detect a gesture!</p>
+      <img id="gesture-img" src="/static/gestures/default.png" alt="Gesture Image">
+    </div>
+
+    <script>
+      function blobToBase64(blob) {
+        return new Promise(function (resolve) {
+          const reader = new FileReader();
+          reader.onloadend = function () {
+            resolve(reader.result.split(",")[1]);
+          };
+          reader.readAsDataURL(blob);
+        });
+      }
+
+      gestureStrings = {
+        'no_hand_detected': 'No hand detected.', 'thumbs_up': 'Thumbs Up', 'thumbs_down': 'Thumbs Down',
+        'peace': 'Peace Sign', 'fist': 'Fist', 'open_hand': 'Palm', 'unknown': 'Unknown gesture'
+      }
+
+      // toggle camera on and off
+      let stream = null;
+      let cameraOn = true;
+
+      const video = document.getElementById("preview");
+      const toggleBtn = document.getElementById("toggleCameraBtn");
+      const toggleIcon = document.getElementById("toggleIcon");
+
+      // Function to start camera
+      function startCamera() {
+        navigator.mediaDevices.getUserMedia({ video: true })
+          .then(s => {
+            stream = s;
+            video.srcObject = stream;
+            cameraOn = true;
+            toggleIcon.className = "fa-solid fa-video";
+            toggleBtn.classList.remove("camera-off");
+          })
+          .catch(err => console.error("Could not open camera:", err));
+      }
+
+      // Function to stop camera
+      function stopCamera() {
+        if (stream) {
+          stream.getTracks().forEach(track => track.stop());
+        }
+        video.srcObject = null;
+        cameraOn = false;
+        toggleIcon.className = "fa-solid fa-video-slash";
+        toggleBtn.classList.add("camera-off");
+      }
+
+      // Initialize camera on page load if desired
+        startCamera();
+        function updateCameraIcon() {
+          if (cameraOn) {
+            toggleIcon.classList.remove("fa-video-slash");
+            toggleIcon.classList.add("fa-video");
+            toggleBtn.classList.remove("camera-off");
+          } else {
+            toggleIcon.classList.remove("fa-video");
+            toggleIcon.classList.add("fa-video-slash");
+            toggleBtn.classList.add("camera-off");
+          }
+        }
+
+      // Toggle button handler
+      toggleBtn.onclick = function () {
+        if (cameraOn) {
+          stopCamera();
+        } else {
+          startCamera();
+        }
+        updateCameraIcon();
+      };
+      document.getElementById("captureBtn").onclick = function () {
+        const track = stream.getVideoTracks()[0];
+        const capture = new ImageCapture(track);
+
+        capture.takePhoto()
+          .then(blobToBase64)
+          .then(function (base64) {
+            // send to app.py which will send to ML client to be analyzed 
+            console.log("Base64:", base64);
+            return fetch("/receive_result", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ image_base64: base64 })
+            });
+          })
+          .then(res => res.json())
+          .then(function (data) {
+            console.log("ML Response:", data);
+
+            // update the displayed gesture name
+            document.getElementById("gesture-name").textContent = gestureStrings[data.gesture] || "Unknown gesture";
+
+            // update the gesture image
+            if (data.image_path) {
+              document.getElementById("gesture-img").src = data.image_path;
+            } else {
+              document.getElementById("gesture-img").src = "";
+            }
+          })
+          .catch(err => console.error("Error:", err));
+      };
+
+      document.getElementById("uploadBtn").onclick = function () {
+        document.getElementById("uploadInput").click();
+      };
+      document.getElementById("uploadInput").onchange = function (event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const base64 = e.target.result.split(",")[1];
+          fetch("/receive_result", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ image_base64: base64 })
+          })
+            .then(res => res.json())
+            .then(function (data) {
+              console.log("ML Response:", data);
+              document.getElementById("gesture-name").textContent = gestureStrings[data.gesture] || "Unknown gesture";
+
+              // update the gesture image
+              if (data.image_path) {
+                document.getElementById("gesture-img").src = data.image_path;
+              } else {
+                document.getElementById("gesture-img").src = "";
+              }
+            })
+            .catch(err => console.error("Error:", err));
+        };
+        reader.readAsDataURL(file);
+      };
+    </script>
+  </div>
+
+</body>
+
 </html>
