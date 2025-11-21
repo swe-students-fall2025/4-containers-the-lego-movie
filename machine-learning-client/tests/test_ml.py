@@ -1,15 +1,14 @@
 """Unit tests for the machine learning helper functions."""
 import sys
 import os
-
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-
 import base64
 import io
 from PIL import Image
 from unittest.mock import MagicMock, patch
 import pytest
 import numpy as np
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from app import (
     decode_base64_to_cv2_image,
