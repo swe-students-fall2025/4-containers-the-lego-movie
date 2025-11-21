@@ -1,6 +1,5 @@
 """Machine learning client that simulates sensor readings and stores them in MongoDB."""
 
-# currently some functions are commented out as i cant access web app yet
 import os
 import base64
 from datetime import datetime, timezone
@@ -28,7 +27,6 @@ mediapipe_hands = mp.solutions.hands.Hands(
 mediapipe_drawing = mp.solutions.drawing_utils
 
 # utility functions
-
 
 def decode_base64_to_cv2_image(image_base64: str) -> np.ndarray:
     # pylint: disable=undefined-variable
@@ -134,7 +132,6 @@ def map_gesture_to_image_path(gesture_label: str) -> str:
 
 
 # data base functions
-
 
 def save_to_db(
     collection,
