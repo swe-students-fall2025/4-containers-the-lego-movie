@@ -52,12 +52,10 @@ def classify_gesture_from_landmarks(hand_landmarks) -> str:
     - 'open_hand'
     - 'unknown'
     """
-    import numpy as np
 
     landmark_list = hand_landmarks.landmark
     wrist = landmark_list[0]
     thumb_tip = landmark_list[4]
-    thumb_mcp = landmark_list[2]
 
     finger_tip_indices = [8, 12, 16, 20]
     finger_mcp_indices = [5, 9, 13, 17]
@@ -85,7 +83,7 @@ def classify_gesture_from_landmarks(hand_landmarks) -> str:
     if other_fingers_folded:
         if thumb_dir[1] < -0.5:
             return "thumbs_up"
-        elif thumb_dir[1] > 0.5:
+        if thumb_dir[1] > 0.5:
             return "thumbs_down"
 
     if index_extended and middle_extended and not ring_extended and not pinky_extended:
