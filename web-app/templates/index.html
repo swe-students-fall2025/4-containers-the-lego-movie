@@ -279,6 +279,7 @@
               }
             })
             .catch(err => console.error("Error:", err));
+            event.target.value = "";
         };
         reader.readAsDataURL(file);
       };
