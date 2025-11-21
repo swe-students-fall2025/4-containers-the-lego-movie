@@ -84,7 +84,7 @@ def classify_gesture_from_landmarks(hand_landmarks) -> str:
         finger_states[0]
         and finger_states[1]
         and not finger_states[2]
-        and not finger_states[30]
+        and not finger_states[3]
     ):
         return "peace"
 
