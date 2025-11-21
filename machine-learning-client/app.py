@@ -41,7 +41,6 @@ def decode_base64_to_cv2_image(image_base64: str) -> np.ndarray:
     )
     return cv2_image
 
-
 def classify_gesture_from_landmarks(hand_landmarks) -> str:
     """Very simple heuristic gesture classifier based on Mediapipe landmarks.
 
@@ -53,8 +52,6 @@ def classify_gesture_from_landmarks(hand_landmarks) -> str:
     - 'open_hand'
     - 'unknown'
     """
-def classify_gesture_from_landmarks(hand_landmarks, hand_label="RIGHT") -> str:
-    """Robust gesture classifier for thumbs up/down and other simple gestures."""
     import numpy as np
 
     landmark_list = hand_landmarks.landmark
@@ -69,16 +66,10 @@ def classify_gesture_from_landmarks(hand_landmarks, hand_label="RIGHT") -> str:
         np.array([landmark_list[9].x - wrist.x, landmark_list[9].y - wrist.y])
     )
 
-    def is_finger_folded(tip_idx, mcp_idx, threshold=0.3):
-        tip = landmark_list[tip_idx]
-        mcp = landmark_list[mcp_idx]
-        dist = np.linalg.norm(np.array([tip.x - mcp.x, tip.y - mcp.y]))
-        return dist / hand_size < threshold
-
     def is_finger_extended(tip_idx, mcp_idx):
         tip = landmark_list[tip_idx]
         mcp = landmark_list[mcp_idx]
-        return tip.y < mcp.y - 0.01  
+        return tip.y < mcp.y - 0.01
 
     finger_states = [
         is_finger_extended(tip_idx, mcp_idx)
