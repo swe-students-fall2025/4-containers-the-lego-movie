@@ -36,9 +36,9 @@ This repository contains a complete multi-container system with three main compo
 ## 👥 Team Members
 - **Conor Tiernan** — https://github.com/ct-04  
 - **Sydney Nadeau** - https://github.com/sen5217  
--  
--  
--  
+- **Grace He** - https://github.com/gracehe04
+-  **Alissa Hsu** - https://github.com/alissahsu22
+-  **Lucy Hartigan** - https://github.com/lucyhartigan
 
 ---
 
