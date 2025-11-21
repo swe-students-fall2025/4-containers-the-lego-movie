@@ -53,54 +53,55 @@ def classify_gesture_from_landmarks(hand_landmarks) -> str:
     - 'open_hand'
     - 'unknown'
     """
+def classify_gesture_from_landmarks(hand_landmarks, hand_label="RIGHT") -> str:
+    """Robust gesture classifier for thumbs up/down and other simple gestures."""
+    import numpy as np
+
     landmark_list = hand_landmarks.landmark
+    wrist = landmark_list[0]
+    thumb_tip = landmark_list[4]
+    thumb_mcp = landmark_list[2]
 
-    wrist_landmark = landmark_list[0]
-    thumb_tip_landmark = landmark_list[4]
-
-    # Indices for index, middle, ring, pinky tips and MCP joints
     finger_tip_indices = [8, 12, 16, 20]
     finger_mcp_indices = [5, 9, 13, 17]
 
-    def is_finger_extended(tip_index: int, mcp_index: int) -> bool:
-        fingertip_landmark = landmark_list[tip_index]
-        finger_mcp_landmark = landmark_list[mcp_index]
-        # smaller y = higher on screen
-        return fingertip_landmark.y < finger_mcp_landmark.y - 0.02
+    hand_size = np.linalg.norm(
+        np.array([landmark_list[9].x - wrist.x, landmark_list[9].y - wrist.y])
+    )
 
-    # Compute which fingers are extended
+    def is_finger_folded(tip_idx, mcp_idx, threshold=0.3):
+        tip = landmark_list[tip_idx]
+        mcp = landmark_list[mcp_idx]
+        dist = np.linalg.norm(np.array([tip.x - mcp.x, tip.y - mcp.y]))
+        return dist / hand_size < threshold
+
+    def is_finger_extended(tip_idx, mcp_idx):
+        tip = landmark_list[tip_idx]
+        mcp = landmark_list[mcp_idx]
+        return tip.y < mcp.y - 0.01  
+
     finger_states = [
-        is_finger_extended(tip_index, mcp_index)
-        for tip_index, mcp_index in zip(finger_tip_indices, finger_mcp_indices)
+        is_finger_extended(tip_idx, mcp_idx)
+        for tip_idx, mcp_idx in zip(finger_tip_indices, finger_mcp_indices)
     ]
     extended_count = sum(finger_states)
+    index_extended, middle_extended, ring_extended, pinky_extended = finger_states
 
-    (
-        index_extended,
-        middle_extended,
-        ring_extended,
-        pinky_extended,
-    ) = finger_states
+    thumb_vec = np.array([thumb_tip.x - wrist.x, thumb_tip.y - wrist.y])
+    thumb_dir = thumb_vec / (np.linalg.norm(thumb_vec) + 1e-6)
 
-    # Thumb direction: compare thumb tip to wrist
-    thumb_vertical_delta = thumb_tip_landmark.y - wrist_landmark.y
-
-    # Heuristic rules
-    if extended_count == 0:
-        return "fist"
-
-    if all(finger_states):
-        return "open_hand"
+    other_fingers_folded = extended_count <= 1
+    if other_fingers_folded:
+        if thumb_dir[1] < -0.5:
+            return "thumbs_up"
+        elif thumb_dir[1] > 0.5:
+            return "thumbs_down"
 
     if index_extended and middle_extended and not ring_extended and not pinky_extended:
         return "peace"
 
-    # Thumb clearly above or below wrist → thumbs up/down
-    if extended_count <= 1:
-        if thumb_vertical_delta < -0.10:
-            return "thumbs_up"
-        if thumb_vertical_delta > 0.10:
-            return "thumbs_down"
+    if all(finger_states):
+        return "open_hand"
 
     return "unknown"
 
