@@ -70,19 +70,16 @@ def classify_gesture_from_landmarks(hand_landmarks) -> str:
         for tip_idx, mcp_idx in zip(finger_tip_indices, finger_mcp_indices)
     ]
     extended_count = sum(finger_states)
-    index_extended, middle_extended, ring_extended, pinky_extended = finger_states
-
     thumb_vec = np.array([thumb_tip.x - wrist.x, thumb_tip.y - wrist.y])
     thumb_dir = thumb_vec / (np.linalg.norm(thumb_vec) + 1e-6)
 
-    other_fingers_folded = extended_count <= 1
-    if other_fingers_folded:
+    if extended_count <= 1:
         if thumb_dir[1] < -0.5:
             return "thumbs_up"
         if thumb_dir[1] > 0.5:
             return "thumbs_down"
 
-    if index_extended and middle_extended and not ring_extended and not pinky_extended:
+    if finger_states[0] and finger_states[1] and not finger_states[2] and not finger_states[3]:
         return "peace"
 
     if all(finger_states):
