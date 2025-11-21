@@ -1,4 +1,5 @@
 """Unit tests for the machine learning helper functions."""
+# pylint: disable=missing-function-docstring, missing-class-docstring
 import sys
 import os
 import io
@@ -8,6 +9,8 @@ from unittest.mock import MagicMock, patch
 import numpy as np
 from PIL import Image
 
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 from app import (
     decode_base64_to_cv2_image,
     # classify_gesture_from_landmarks,
@@ -16,8 +19,6 @@ from app import (
     save_to_db,
     process_incoming_image,
 )
-
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 # Create dummy image
 def create_dummy_image_base64(width = 64, height = 64, color = (255, 0, 0)) -> str:
