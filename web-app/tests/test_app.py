@@ -6,9 +6,9 @@ import json
 from unittest.mock import patch
 
 from requests.exceptions import RequestException
-import pytest
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+import pytest
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))  # pylint: disable=C0413
 
 from app import app
 
