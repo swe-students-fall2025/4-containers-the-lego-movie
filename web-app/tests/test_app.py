@@ -7,7 +7,7 @@ from unittest.mock import patch
 
 from requests.exceptions import RequestException
 
-import pytest
+import pytest  # pylint: disable=import-error
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))  # pylint: disable=C0413
 
 from app import app
