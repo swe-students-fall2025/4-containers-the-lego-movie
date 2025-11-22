@@ -18,6 +18,7 @@ from app import (
     map_gesture_to_image_path,
     save_to_db,
     process_incoming_image,
+    classify_gesture_from_landmarks,
 )
 
 
@@ -104,6 +105,121 @@ def test_process_incoming_image(mock_analyze_image, mock_get_db):
     assert result["gesture"] == "thumbs_up"
     assert result["image_path"].endswith("thumbs_up.png")
     assert result["id"] == "abc123"
+
+
+# Test classify_gesture_from_landmarks for thumbs_up
+def test_classify_thumbs_up():
+    landmarks = [MockLandmark(0, 0.5), None, None, None, MockLandmark(0, 0.0)]
+    while len(landmarks) < 21:
+        landmarks.append(MockLandmark(0, 1))
+
+    hand = MockHandLandmarks(landmarks)
+    result = classify_gesture_from_landmarks(hand)
+    assert result == "thumbs_up"
+
+
+# Test classify_gesture_from_landmarks for thumbs_down
+def test_classify_thumbs_down():
+    landmarks = [MockLandmark(0, 0.5), None, None, None, MockLandmark(0, 1.2)]
+    while len(landmarks) < 21:
+        landmarks.append(MockLandmark(0, 1))
+
+    hand = MockHandLandmarks(landmarks)
+    result = classify_gesture_from_landmarks(hand)
+    assert result == "thumbs_down"
+
+
+# Test classify_gesture_from_landmarks for peace
+def test_classify_peace():
+    landmarks = [MockLandmark(0, 0) for _ in range(21)]
+
+    # Wrist
+    landmarks[0] = MockLandmark(0, 0.5)
+
+    # Thumb tip
+    landmarks[4] = MockLandmark(0, 0.6)
+
+    # Index MCP/TIP
+    landmarks[5] = MockLandmark(0, 0.6)
+    landmarks[8] = MockLandmark(0, 0.3)
+
+    # Middle MCP/TIP
+    landmarks[9] = MockLandmark(0, 0.6)
+    landmarks[12] = MockLandmark(0, 0.3)
+
+    # Ring MCP/TIP
+    landmarks[13] = MockLandmark(0, 0.6)
+    landmarks[16] = MockLandmark(0, 0.7)
+
+    # Pinky MCP/TIP
+    landmarks[17] = MockLandmark(0, 0.6)
+    landmarks[20] = MockLandmark(0, 0.7)
+
+    hand = MockHandLandmarks(landmarks)
+    result = classify_gesture_from_landmarks(hand)
+    assert result == "peace"
+
+
+# Test classify_gesture_from_landmarks for open_hand
+def test_classify_open_hand():
+    landmarks = [MockLandmark(0, 0) for _ in range(21)]
+
+    # Wrist
+    landmarks[0] = MockLandmark(0, 0.5)
+
+    # Thumb tip
+    landmarks[4] = MockLandmark(0, 0.3)
+
+    # Index MCP/TIP
+    landmarks[5] = MockLandmark(0, 0.6)
+    landmarks[8] = MockLandmark(0, 0.3)
+
+    # Middle MCP/TIP
+    landmarks[9] = MockLandmark(0, 0.6)
+    landmarks[12] = MockLandmark(0, 0.3)
+
+    # Ring MCP/TIP
+    landmarks[13] = MockLandmark(0, 0.6)
+    landmarks[16] = MockLandmark(0, 0.3)
+
+    # Pinky MCP/TIP
+    landmarks[17] = MockLandmark(0, 0.6)
+    landmarks[20] = MockLandmark(0, 0.3)
+
+    hand = MockHandLandmarks(landmarks)
+    result = classify_gesture_from_landmarks(hand)
+    assert result == "open_hand"
+
+
+# Test classify_gesture_from_landmarks for unknown
+def test_classify_unknown():
+    landmarks = [MockLandmark(0, 0) for _ in range(21)]
+
+    # Wrist
+    landmarks[0] = MockLandmark(0, 0.5)
+
+    # Thumb tip
+    landmarks[4] = MockLandmark(0, 0.5)
+
+    # Index MCP/TIP
+    landmarks[5] = MockLandmark(0, 0.6)
+    landmarks[8] = MockLandmark(0, 0.5)
+
+    # Middle MCP/TIP
+    landmarks[9] = MockLandmark(0, 0.6)
+    landmarks[12] = MockLandmark(0, 0.5)
+
+    # Ring MCP/TIP
+    landmarks[13] = MockLandmark(0, 0.6)
+    landmarks[16] = MockLandmark(0, 0.65)
+
+    # Pinky MCP/TIP
+    landmarks[17] = MockLandmark(0, 0.6)
+    landmarks[20] = MockLandmark(0, 0.5)
+
+    hand = MockHandLandmarks(landmarks)
+    result = classify_gesture_from_landmarks(hand)
+    assert result == "unknown"
 
 
 # def test_collect_data():
