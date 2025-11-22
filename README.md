@@ -8,7 +8,7 @@
 # MojiHands
 ## 🧱 Containerized Hand Gesture Recognition System
 
-A fully containerized machine-learning pipeline that captures a hand gesture from the browser, analyzes it with MediaPipe, stores results in MongoDB, and displays them in a clean Flask web interface.  
+A fully containerized machine-learning pipeline that captures a hand gesture from the browser, analyzes it with MediaPipe, stores results in MongoDB, retrieves the results from MongoDB, then displays them in a clean Flask web interface.  
 All services run seamlessly together using **Docker Compose** and are continuously validated by **GitHub Actions**.
 
 ---
@@ -136,8 +136,3 @@ Make sure MongoDB is running locally on localhost:27017.
 
 ---
 
-
-
-# Containerized App Exercise
-
-Build a containerized app that uses machine learning. See [instructions](./instructions.md) for details.
