@@ -18,7 +18,7 @@ from app import (
     map_gesture_to_image_path,
     save_to_db,
     process_incoming_image,
-    classify_gesture_from_landmarks
+    classify_gesture_from_landmarks,
 )
 
 
@@ -220,6 +220,7 @@ def test_classify_unknown():
     hand = MockHandLandmarks(landmarks)
     result = classify_gesture_from_landmarks(hand)
     assert result == "unknown"
+
 
 # def test_collect_data():
 #     """collect_data should return a mapping with a float value and timestamp."""
