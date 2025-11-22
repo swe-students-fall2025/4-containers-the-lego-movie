@@ -112,7 +112,7 @@ def test_classify_thumbs_up():
     landmarks = [MockLandmark(0, 0.5), None, None, None, MockLandmark(0, 0.0)]
     while len(landmarks) < 21:
         landmarks.append(MockLandmark(0, 1))
-    
+
     hand = MockHandLandmarks(landmarks)
     result = classify_gesture_from_landmarks(hand)
     assert result == "thumbs_up"
@@ -123,7 +123,7 @@ def test_classify_thumbs_down():
     landmarks = [MockLandmark(0, 0.5), None, None, None, MockLandmark(0, 1.2)]
     while len(landmarks) < 21:
         landmarks.append(MockLandmark(0, 1))
-    
+
     hand = MockHandLandmarks(landmarks)
     result = classify_gesture_from_landmarks(hand)
     assert result == "thumbs_down"
@@ -220,7 +220,6 @@ def test_classify_unknown():
     hand = MockHandLandmarks(landmarks)
     result = classify_gesture_from_landmarks(hand)
     assert result == "unknown"
-    
 
 # def test_collect_data():
 #     """collect_data should return a mapping with a float value and timestamp."""
